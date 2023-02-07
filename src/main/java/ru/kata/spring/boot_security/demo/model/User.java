@@ -2,12 +2,15 @@ package ru.kata.spring.boot_security.demo.model;
 
 import com.sun.istack.NotNull;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -21,38 +24,41 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(name = "username")
-    @Size(min=3, message = "This username is too short :(")
+    @NotNull
     private String username;
 
     @Column(name = "name")
-    @Size(min=3, message = "Name should be longer than 3")
+    @NotNull
     private String name;
 
     @Column(name = "lastName")
-    @Size(min=3, message = "Last Name should be longer than 3")
+    @NotNull
     private String lastName;
 
     @Column(name = "favouriteColor")
-    @Size(min=3, message = "Favourite color should be longer than 3")
+    @NotNull
     private String favouriteColor;
 
     @Column(name = "password")
-    @Size(min=3, message = "This password is too short :(")
     private String password;
 
     @Column(name="roles")
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Collection<Role> roles;
+    @Fetch(FetchMode.JOIN)
+    private Set<Role> roles = new HashSet<>();
 
 
     public User() {
     }
 
-    public User(String username, String password, Collection<Role> roles) {
+    public User(String username, String name, String lastName, String favouriteColor, String password, Set<Role> roles) {
         this.username = username;
+        this.name = name;
+        this.lastName = lastName;
+        this.favouriteColor = favouriteColor;
         this.password = password;
         this.roles = roles;
     }
@@ -87,7 +93,7 @@ public class User implements UserDetails {
         return password;
     }
 
-    public Collection<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
@@ -118,7 +124,7 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public void setRoles(Collection<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 

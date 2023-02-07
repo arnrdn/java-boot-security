@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -12,6 +13,7 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/admin")
@@ -20,9 +22,12 @@ public class AdminController {
 
     private final RoleService roleService;
 
-    public AdminController(UserService userService, RoleService roleService) {
+    private final PasswordEncoder passwordEncoder;
+
+    public AdminController(UserService userService, RoleService roleService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("")
@@ -32,9 +37,13 @@ public class AdminController {
         return "admin";
     }
     @GetMapping("/user-create")
-    public String createUserForm(User user, ModelMap model) {
-        model.addAttribute("roles", roleService.findAll());
-        return "user-create";
+    public ModelAndView createUserForm() {
+        User user = new User();
+        ModelAndView mav = new ModelAndView("user-create");
+        mav.addObject("user", user);
+        List<Role> roles = roleService.findAll();
+        mav.addObject("roles", roles);
+        return mav;
     }
 
     @PostMapping("/user-create")
@@ -49,29 +58,19 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-//    @GetMapping("/user-update/{id}")
-//    public String updateUserForm(@PathVariable("id") Long id, ModelMap model) {
-//        User user = userService.findById(id);
-//        model.addAttribute("user", user);
-//        return "user-update";
-//    }
-//
-//    @PostMapping("/user-update")
-//    public String updateUser(User user) {
-//        userService.saveUser(user);
-//        return "redirect:/admin";
-//    }
-
     @GetMapping("/user-update/{id}")
-    public String updateUserForm(@PathVariable("id") Long id, Model model) {
-        User user = userService.findById(id);
-        model.addAttribute("user", user);
-        return "user-update";
+    public ModelAndView updateUserForm(@ModelAttribute("user") User user, @PathVariable("id") Long id) {
+        User userToUpdate = userService.findById(id);
+        ModelAndView mav = new ModelAndView("user-update");
+        mav.addObject("user", userToUpdate);
+        List<Role> roles = roleService.findAll();
+        mav.addObject("roles", roles);
+        return mav;
     }
 
     @PutMapping("/user-update")
     public String updateUser(@ModelAttribute("user") User user) {
-        userService.saveUser(user);
+        userService.updateUser(user);
         return "redirect:/admin";
     }
 }

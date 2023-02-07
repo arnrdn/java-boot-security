@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.Role;
@@ -34,19 +35,30 @@ public class UserService implements UserDetailsService {
 
     public void saveUser(User user) {
         User userDB = userRepository.findByUsername(user.getUsername());
-        System.out.println("USER" + user.getUsername());
 
-
-        User userToSave = new User(user.getUsername(), passwordEncoder().encode(user.getPassword()), Arrays.asList(new Role("ROLE_USER")));
-        userRepository.save(userToSave);
-
+        if (userDB == null) {
+            User userToSave = new User(user.getUsername(), user.getName(), user.getLastName(), user.getFavouriteColor(), passwordEncoder().encode(user.getPassword()), user.getRoles());
+            userRepository.save(userToSave);
+        }
 
     }
 
+    public void updateUser(User user) {
+        User userDB = findById(user.getId());
 
-//    public void updateUser(User user) {
-//        userRepository.updateUser(user);
-//    }
+        if (passwordEncoder().matches(user.getPassword(), userDB.getPassword())) {
+            user.setPassword(userDB.getPassword());
+        } else {
+            user.setPassword(user.getPassword());
+        }
+//        user.setUsername(user.getUsername());
+//        user.setName(user.getUsername());
+//        user.setLastName(user.getLastName());
+//        user.setFavouriteColor(user.getFavouriteColor());
+//        user.setRoles(user.getRoles());
+        userRepository.save(user);
+    }
+
 
 
     public void deleteUser(Long id) {
@@ -62,6 +74,10 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username);
     }
 
+    private PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -74,11 +90,7 @@ public class UserService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
     }
 
-    private BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
-        return roles.stream().map(r -> new SimpleGrantedAuthority(r.getRole())).collect(Collectors.toList());
+    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Set<Role> roles) {
+        return roles.stream().map(r -> new SimpleGrantedAuthority(r.getRole())).collect(Collectors.toSet());
     }
 }

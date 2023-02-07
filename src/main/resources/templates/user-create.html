@@ -7,38 +7,39 @@
 </head>
 <body>
 
-<form action="#" th:action="@{user-create}" th:object="${user}" method="post">
+<div th:insert="navbar :: navbar"></div>
+
+<form th:action="@{user-create}" th:object="${user}" method="post">
   <label for="username">Username</label>
   </br>
   <input type="text" th:field="*{username}" id="username" placeholder="Enter your username">
   </br>
-<!--  <label for="name">First Name</label>-->
-<!--  </br>-->
-<!--  <input type="text" th:field="*{name}" id="name" placeholder="First Name">-->
-<!--  </br>-->
-<!--  <label for="last_name">Last Name</label>-->
-<!--  </br>-->
-<!--  <input type="text" th:field="*{lastName}" id="last_name" placeholder="Last Name">-->
-<!--  </br>-->
-<!--  <label for="favourite_color">Favourite Color</label>-->
-<!--  </br>-->
-<!--  <input type="text" th:field="*{favouriteColor}" id="favourite_color" placeholder="Favourite Color">-->
-<!--  </br>-->
-<!--  <label>Roles:-->
-<!--      <input type="checkbox" name="roles"-->
-<!--          th:each="role : ${roles}"-->
-<!--          th:text="${role.role}"-->
-<!--          th:value="${role}"-->
-<!--          th:field="*{roles}"/>-->
-<!--  </label>-->
-<!--  </br>-->
+  <label for="name">First Name</label>
+  </br>
+  <input type="text" th:field="*{name}" id="name" placeholder="First Name">
+  </br>
+  <label for="last_name">Last Name</label>
+  </br>
+  <input type="text" th:field="*{lastName}" id="last_name" placeholder="Last Name">
+  </br>
+  <label for="favourite_color">Favourite Color</label>
+  </br>
+  <input type="text" th:field="*{favouriteColor}" id="favourite_color" placeholder="Favourite Color">
+  </br>
+  <label>Roles:
+      <input type="checkbox" name="roles"
+          th:each="role : ${roles}"
+          th:text="${role.role}"
+          th:value="${role.id}"
+          th:field="*{roles}"/>
+  </label>
+  </br>
   <label for="password">Password</label>
   </br>
   <input type="password" th:field="*{password}" id="password" placeholder="Enter your password">
   </br>
   <input type="submit" value="Create User!">
 </form>
-<p><a th:href="@{logout}">Logout</a></p>
 
 </body>
 </html>

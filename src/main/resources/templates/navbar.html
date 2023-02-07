@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Navigation bar</title>
+</head>
+<body>
+
+<nav th:fragment="navbar">
+  <div>
+    <div>
+      <a  th:href="@{/}">User Management</a>
+    </div>
+    <ul>
+      <li sec:authorize="!isAuthenticated()"><a th:href="@{login}">Login</a></li>
+      <li sec:authorize="hasAnyRole('USER', 'ADMIN')"><a th:href="@{user}">User</a></li>
+      <li sec:authorize="hasRole('ADMIN')"><a th:href="@{admin}">Admin</a></li>
+      <li sec:authorize="isAuthenticated()"><a  th:href="@{logout}">Logout</a></li>
+    </ul>
+  </div>
+</nav>
+
+</body>
+</html>

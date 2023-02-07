@@ -7,23 +7,44 @@
 </head>
 <body>
 
+<div th:insert="navbar :: navbar"></div>
 
 <th:block>
-    <form th:method="PUT" action="#" th:action="@{user-update}" th:object="${user}">
+    <form th:method="PUT" th:action="@{/admin/user-update}" th:object="${user}">
+        <label for="id">ID</label>
+        </br>
+        <input readonly type="text" th:field="*{id}" id="id" placeholder="ID">
+        <br/>
         <label for="username">Username</label>
         </br>
         <input type="text" th:field="*{username}" id="username" placeholder="Enter your username">
         </br>
+        <label for="name">First Name</label>
+        </br>
+        <input type="text" th:field="*{name}" id="name" placeholder="First Name">
+        </br>
+        <label for="last_name">Last Name</label>
+        </br>
+        <input type="text" th:field="*{lastName}" id="last_name" placeholder="Last Name">
+        </br>
+        <label for="favourite_color">Favourite Color</label>
+        </br>
+        <input type="text" th:field="*{favouriteColor}" id="favourite_color" placeholder="Favourite Color">
+        </br>
+        <label>Roles:
+            <input type="checkbox" name="roles"
+                   th:each="role : ${roles}"
+                   th:text="${role.role}"
+                   th:value="${role.id}"
+                   th:field="*{roles}"/>
+        </label>
+        </br>
         <label for="password">Password</label>
         </br>
-        <input type="text" th:field="*{password}" id="password"
-               placeholder="Change ur pswd">
+        <input type="text" th:field="*{password}" id="password" placeholder="Enter your password">
         </br>
         <input type="submit" value="Update User!">
     </form>
-    <p><a th:href="@{logout}">Logout</a></p>
 </th:block>
-
-
 </body>
 </html>
