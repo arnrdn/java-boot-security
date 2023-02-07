@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Spring Security Example</title>
+</head>
+<body>
+<th:block>
+    <h1 th:text="${user.getUsername()}"></h1><h1>, hello!</h1>
+
+<div>
+    <p>First name: <span th:text="${user.getName()}"/></p>
+    <p>Last name: <span th:text="${user.getLastName()}"/></p>
+    <p>Favourite color: <span th:text="${user.getFavouriteColor()}"/></p>
+    <th:block th:each="role : ${user.getRoles()}">
+        <p th:text="${role.getRole()}"></p>
+    </th:block>
+</div>
+<p><a th:href="@{logout}">Logout</a></p>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin page</title>
+</head>
+<body>
+<h1>Welcome to our elite club of people with rights!</h1>
+<table>
+  <thead>
+  <tr>
+    <th>Id</th>
+    <th>Username</th>
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>Favourite Color</th>
+  </tr>
+  </thead>
+  <tbody>
+  <th:block th:each="user : ${users}">
+    <tr>
+      <th th:text="${user.id}"></th>
+      <td th:text="${user.username}"></td>
+      <td th:text="${user.name}"></td>
+      <td th:text="${user.lastName}"></td>
+      <td th:text="${user.favouriteColor}"></td>
+      <td>
+        <form th:action="@{admin/user-update/{id}(id=${user.id})}">
+          <input type="submit" value="Edit">
+        </form>
+      </td>
+      <td>
+        <form th:method="DELETE" th:action="@{admin/user-delete/{id}(id=${user.id})}">
+          <input type="submit" value="Delete">
+        </form>
+      </td>
+    </tr>
+  </th:block>
+  </tbody>
+</table>
+<p><a th:href="@{admin/user-create}">Create User!</a></p>
+<p><a th:href="@{logout}">Logout</a></p>
+
+</body>
+</html>
